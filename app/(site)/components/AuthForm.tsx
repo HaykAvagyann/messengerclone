@@ -1,11 +1,13 @@
 "use client";
 
-import Buttons from "@/app/components/Buttons";
-import Input from "@/app/components/inputs/Input";
+import axios from "axios";
 import { useCallback, useState } from "react";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
-import AuthSocialButton from "./AuthSocialButton";
 import { BsGithub, BsGoogle } from "react-icons/bs";
+
+import Buttons from "@/app/components/Buttons";
+import Input from "@/app/components/inputs/Input";
+import AuthSocialButton from "./AuthSocialButton";
 
 type Variant = "LOGIN" | "REGISTER";
 
@@ -37,7 +39,7 @@ const AuthForm = () => {
     setIsLoading(true);
 
     if (variant === "REGISTER") {
-      //Axios Register
+      axios.post('/api/register', data)
     }
 
     if (variant === "LOGIN") {
