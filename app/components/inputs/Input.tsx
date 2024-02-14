@@ -10,11 +10,11 @@ interface InputProps {
   type?: string;
   required?: boolean;
   register: UseFormRegister<FieldValues>;
-  erros: FieldErrors;
+  errors: FieldErrors;
   disabled?: boolean;
 }
 
-const Input: React.FC<InputProps> = ({ label, id, type, required, register, erros, disabled }) => {
+const Input: React.FC<InputProps> = ({ label, id, type, required, register, errors, disabled }) => {
   return (
     <div>
       <label
@@ -29,7 +29,8 @@ const Input: React.FC<InputProps> = ({ label, id, type, required, register, erro
           autoComplete={id}
           disabled={disabled}
           {...register(id, { required })}
-          className={clsx(`
+          className={clsx(
+            `
                     form-input
                     block
                     w-full
@@ -47,7 +48,10 @@ const Input: React.FC<InputProps> = ({ label, id, type, required, register, erro
                     focus:ring-sky-600
                     sm:text-sm
                     sm:leading-6
-                  `, erros[id] && "focus:ring-rose-500", disabled && "opacity-50 cursor-default")}
+                  `,
+            errors[id] && "focus:ring-rose-500",
+            disabled && "opacity-50 cursor-default"
+          )}
         />
       </div>
     </div>
