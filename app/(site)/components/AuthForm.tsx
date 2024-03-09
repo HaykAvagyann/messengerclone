@@ -5,11 +5,12 @@ import { signIn, useSession } from 'next-auth/react';
 import { useCallback, useEffect, useState } from 'react';
 import { BsGithub, BsGoogle } from 'react-icons/bs';
 import { FieldValues, SubmitHandler, useForm } from 'react-hook-form';
+import { useRouter } from 'next/navigation';
+
 import Input from '@/app/components/inputs/Input';
 import AuthSocialButton from './AuthSocialButton';
+import Buttons from "@/app/components/Buttons"
 import { toast } from 'react-hot-toast';
-import Button from '@/app/components/Buttons';
-import { useRouter } from 'next/navigation';
 
 type Variant = 'LOGIN' | 'REGISTER';
 
@@ -21,7 +22,7 @@ const AuthForm = () => {
 
   useEffect(() => {
     if (session?.status === 'authenticated') {
-      router.push('/users');
+      router.push('/conversations');
     }
   }, [session?.status, router]);
 
@@ -51,7 +52,6 @@ const AuthForm = () => {
     if (variant === 'REGISTER') {
       axios
         .post('/api/register', data)
-        .then(() => signIn('credentials', data))
         .then(() =>
           signIn('credentials', {
             ...data,
@@ -60,12 +60,14 @@ const AuthForm = () => {
         )
         .then((callback) => {
           if (callback?.error) {
-            toast.error('Failed to register. Please try again.');
-          } else {
-            toast.success('Registration successful!');
+            toast.error('Invalid credentials!');
+          }
+
+          if (callback?.ok) {
+            router.push('/conversations');
           }
         })
-        .catch(() => toast.error('Something went wrong during registration. Please try again.'))
+        .catch(() => toast.error('Something went wrong!'))
         .finally(() => setIsLoading(false));
     }
 
@@ -78,9 +80,9 @@ const AuthForm = () => {
           if (callback?.error) {
             toast.error('Invalid credentials!');
           }
-          else if (callback?.ok && !callback?.error) {
-            toast.success('Logged in!');
-            router.push('/users');
+
+          if (callback?.ok) {
+            router.push('/conversations');
           }
         })
         .finally(() => setIsLoading(false));
@@ -95,8 +97,9 @@ const AuthForm = () => {
         if (callback?.error) {
           toast.error('Invalid credentials!');
         }
-        if (callback?.ok && !callback?.error) {
-          toast.success('Logged in');
+
+        if (callback?.ok) {
+          router.push('/conversations');
         }
       })
       .finally(() => setIsLoading(false));
@@ -145,12 +148,12 @@ const AuthForm = () => {
             type='password'
           />
           <div>
-            <Button
+            <Buttons
               disabled={isLoading}
               fullWidth
               type='submit'>
               {variant === 'LOGIN' ? 'Sign in' : 'Register'}
-            </Button>
+            </Buttons>
           </div>
         </form>
 
